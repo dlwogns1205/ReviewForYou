@@ -21,6 +21,16 @@ body {
   justify-content: left;
 }
 
+.row_right{
+  display:flex;
+  justify-content: right;
+}
+
+.row_side{
+  display:flex;
+  justify-content: space-between;
+}
+
 .col {
   display: flex;
   align-items: center;
@@ -33,6 +43,11 @@ input:focus {
 a {
   color: white;
   text-decoration: none;
+}
+
+.row_side{
+  display:flex;
+  justify-content: space-between;
 }
 /*-------------------- main -------------------- */
 
@@ -65,8 +80,8 @@ a {
 
 .top {
   position: absolute;
-  left: 50px;
-  top: 25px;
+  left: 0px;
+  top: 0px;
   width: 100vw;
   height: 100px;
   opacity: 0;
@@ -83,6 +98,7 @@ a {
   color: white;
   font-family: Impact, Charcoal, sans-serif;
   z-index: 3;
+  margin:0px 0px 0px 20px;
 }
 
 .search {
@@ -91,6 +107,7 @@ a {
   border-radius: 25px 25px 25px 25px;
   padding-left: 1vw;
   z-index: 3;
+  margin:10px 0px 0px 0px;
 }
 
 .btn {
@@ -99,6 +116,12 @@ a {
   height: 1vh;
   margin: 1vh 0px 0px -1vw;
   z-index: 3;
+}
+
+.icon{
+  width:200px;
+  height:100%;
+  background-color: red;
 }
 
 /* bot */
@@ -138,16 +161,20 @@ li {
   height: 30vh;
 }
 .slide li:nth-child(1) {
-  background: #ffa;
+  #background: #ffa;
+  background-color: #181818;
 }
 .slide li:nth-child(2) {
-  background: #faa;
+  #background: #faa;
+  background-color: #181818;
 }
 .slide li:nth-child(3) {
-  background: #afa;
+  #background: #afa;
+  background-color: #181818;
 }
 .slide li:nth-child(4) {
-  background: #aaf;
+  #background: #aaf;
+  background-color: #181818;
 }
 .slide input {
   display: none;

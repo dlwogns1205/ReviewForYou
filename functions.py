@@ -58,7 +58,7 @@ def DNN_func(sentence):
             tmp = [max(values) for i in range(len(values))]
         else:
             tmp = [min(values) for i in range(len(values))]
-        return before_text, [*map(lambda x: round(x, 2), tmp)], positive_or_negative(value)
+        return before_text, [*map(lambda x: round(x, 2), tmp)], positive_or_negative(value), values
     tmp = []
     for i in range(len(values)):
         if i ==0:
@@ -96,7 +96,7 @@ def DNN_func(sentence):
                 tmp.append(big)
             else:
                 tmp.append(small)
-    return before_text, [*map(lambda x: round(x, 2), tmp)], positive_or_negative(value)
+    return before_text, [*map(lambda x: round(x, 2), tmp)], positive_or_negative(value), values
 
 def Crawling_11st(product_num, pageNo):
     try:
@@ -146,7 +146,7 @@ def Crawling_coupang(product_num, pageNo):
                 xai_value = []
                 xai_positive_negative = []
                 for sen in sss(review):
-                    before_text, value, positive_negative = DNN_func(sen)
+                    before_text, value, positive_negative, _ = DNN_func(sen)
                     xai_before_text.extend(before_text)
                     xai_value.extend(value)
                     xai_positive_negative.append(positive_negative)
@@ -348,7 +348,7 @@ def review_summarization(text):
         review_data_list = []
         for i in range(len(review_data)):
             if word in mecab.morphs(review_data.loc[i, 'review']):
-                _, _, pos_neg_ratio = DNN_func(review_data.loc[i, 'review'])
+                _, _, pos_neg_ratio, _ = DNN_func(review_data.loc[i, 'review'])
                 if 2 < len(review_data.loc[i, 'review']) < 30:
                     temp_sent = [w for w in mecab.morphs(review_data.loc[i, 'review']) if
                                  w not in keyword]

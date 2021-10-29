@@ -9,8 +9,9 @@
   height: 90vh;
   background-color: #181818;
   z-index: 4;
-  display: none;
-  overflow: auto;
+  display: block;
+  overflow-y: scroll;
+  overflow-x: hidden;
   padding-bottom: 50px;
 }
 
@@ -27,8 +28,8 @@
   height: 100vh;
   background-color: black;
   opacity: 0.8;
-  z-index: 4;
-  display: none;
+  z-index: 3;
+  display: block;
 }
 
 /* -------------------- modal head -------------------- */
@@ -46,7 +47,7 @@
   font-size: 20px;
   color: white;
   font-weight: bold;
-  margin: 5px 0px 0px 50px;
+  margin: 10px 0px 0px 50px;
 }
 
 .modal_item_star {
@@ -56,18 +57,18 @@
 }
 
 .modal_item_score {
-  font-size: 150%;
   color: white;
   font-weight: bold;
-  margin: 5px 0px 0px 0.5vw;
+  margin: 5px 0px 0px 10px;
   font-size: 25px;
 }
 
 .modal_item_ratio {
   color: lightgray;
   font-weight: bold;
-  margin: 10px 0px 0px 30px;
+  margin: 15px 0px 0px 30px;
   font-size: 15px;
+  width:200px;
 }
 
 .trend_button {
@@ -77,9 +78,10 @@
   font-weight: bold;
   background-color: gray;
   color: white;
-  margin: 12px 0px 0px 490px;
+  margin: 12px 20px 0px  0px;
   border-radius: 5px 5px 5px 5px;
 }
+
 
 /* -------------------- modal a1 -------------------- */
 
@@ -119,7 +121,7 @@
   font-size: 25px;
   font-weight: bold;
   margin: 0px 50px 0px 15px;
-  max-width: 500px;
+  width: 100px;
   color: white;
 }
 
@@ -131,7 +133,7 @@
   font-size: 20px;
   font-weight: bold;
   position: relative;
-  left: -160px;
+  left: -240px;
   color: white;
 }
 .a1_text {
@@ -306,6 +308,7 @@ input[type="checkbox"] {
   width: 90%;
   border-radius: 15px 15px 15px 15px;
   padding: 25px 0px 40px 0px;
+  height: 400px;
 }
 
 .recommend_img {
@@ -378,6 +381,5 @@ input[type="checkbox"] {
 
 .a1_white_bar {
   background-color: #181818;
-  width: 120px;
   height: 31px;
 }

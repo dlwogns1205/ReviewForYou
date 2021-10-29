@@ -22,15 +22,18 @@
 <div class='background'></div>
 <div class='main_title row'><div class='title'><a href="/home">Review For You</a></div></div>
 
-<div class='top row_left col'>
-    <div class='title_box'><a href="/home">Review For You</a></div>
-    <div class='search_box'>
-        <form action="/home/url_search/" method="POST" class='row'>
-            {% csrf_token %}
-            <input class='search' name="url_src" placeholder="카테고리 혹은 URL을 입력해주세요">
-            <button type="submit" class="btn btn-primary"onKeypress="javascript:if(event.keyCode==13) {search_onclick_submit}"></button>
-        </form>
+<div class='top row_side col'>
+    <div class="row">
+        <div class='title_box'><a href="/home">Review For You</a></div>
+        <div class='search_box'>
+            <form action="/home/url_search/" method="POST" class='row'>
+                {% csrf_token %}
+                <input class='search' name="url_src" placeholder="카테고리 혹은 URL을 입력해주세요">
+                <button type="submit" class="btn btn-primary"onKeypress="javascript:if(event.keyCode==13) {search_onclick_submit}"></button>
+            </form>
+        </div>
     </div>
+    <div class="icon"></div>
 </div>
 
 <div class='bot'>
@@ -44,7 +47,7 @@
             {% for temp_product in TOP_Products %}
             <li class='row'>
                 {% for ul in temp_product %}
-                    <div class='item_box'><a href="/modal/{{ ul.id }}/"><img src='{{ ul.img_src }}' class='item' onclick="show_modal()"></a></div>
+                    <div class='item_box'><a href="/modal/{{ ul.id }}/"><img src='{{ ul.img_src }}' class='item'></a></div>
                 {% endfor %}
             </li>
             {% endfor %}
@@ -67,7 +70,12 @@
             {% for temp_product in RECENT_Products %}
             <li class='row'>
                 {% for ul in temp_product %}
-                    <div class='item_box'><a href="/modal/{{ ul.id }}/"><img src='{{ ul.img_src }}' class='item' onclick="show_modal()"></a></div>
+                    <div class='item_box'><a href="/modal/{{ ul.id }}/"><img src='{{ ul.img_src }}' class='item'></a></div>
+                    <div>
+                        <a href="/home/delete/{{ ul.id }}">
+                            <span class="badge rounded-pill bg-danger">삭제</span>
+                        </a>
+                    </div>
                 {% endfor %}
             </li>
             {% endfor %}

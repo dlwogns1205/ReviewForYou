@@ -9,8 +9,10 @@
   height: 90vh;
   background-color: #181818;
   z-index: 5;
-  display: none;
-  overflow: auto;
+  display: block;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-bottom: 50px;
 }
 
 .detail::-webkit-scrollbar {
@@ -27,14 +29,10 @@
   background-color: black;
   opacity: 0.8;
   z-index: 4;
-  display: none;
+  display: block;
 }
 
-.line {
-  background-color: white;
-  width: 1px;
-  height: 900px;
-}
+
 
 /* detail review */
 
@@ -46,11 +44,14 @@
   max-width: 650px;
   font-size: 20px;
   margin: 50px 0px 0px 0px;
+  color:white;
 }
 
 .detail_text_score {
   color: white;
-  font-size: 15px;
+  font-size: 20px;
+  font-width: bold;
+  margin:7px 0px 0px 15px;
 }
 
 .detail_review {
@@ -84,10 +85,10 @@
 }
 
 .detail_a1_keyword {
-  font-size: 20px;
+  font-size: 25px;
   font-weight: bold;
-  margin: 0px 1vw 0px 1vw;
-  width: 150px;
+  margin: 0px 0px 0px 20px;
+  width: 100px;
   color: white;
 }
 
@@ -97,15 +98,37 @@
   width: 250px;
 }
 .detail_a1_ratio {
-  font-size: 15px;
+  font-size: 20px;
   font-weight: bold;
   position: relative;
-  left: -150px;
+  left: -240px;
   color: white;
 }
 
 /* a2 */
 
+.mt-0{
+  font-size:20px;
+
+}
+
+
+
+.mt-1{
+  font-size:15px;
+}
+
+.xai_text{
+  display:inline-block;
+  margin:5px 0px 5px 5px;
+  color:white;
+}
+
+.detail_a2_box{
+  width:600px;
+  margin:20px 0px 0px 80px;
+
+}
 /* a3 */
 
 .detail_a3_box {
@@ -120,13 +143,13 @@
 
 .detail_a3_content {
   margin: 10px 0px 15px 60px;
-  height: 40px;
 }
 
-.detail_a1_keyword {
+.detail_a3_keyword {
   color: white;
-  font-size: 15px;
+  font-size: 20px;
   width: 500px;
+  margin:10px 0px 10px 20px;
 }
 
 /* a4 */
@@ -162,12 +185,12 @@ span.center {
 }
 
 .sss_review:hover {
-  text-decoration: underline;
-  text-decoration-color: lightcoral;
-  text-decoration-style: wavy;
-  text-decoration-thickness: 15%;
+  /*text-decoration: underline;*/
+  /*text-decoration-color: lightcoral;*/
+  /*text-decoration-style: wavy;*/
+  /*text-decoration-thickness: 15%;*/
+  background:linear-gradient(to top,rgba(255,255,255,1) 50%,transparent 50%);
 }
-
 .sss_review {
   position: relative;
 }
