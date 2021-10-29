@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>modal</title>
+    <link rel="stylesheet" href="{% static '/main.css' %}">
+    <link rel="stylesheet" href="{% static '/modal.css' %}">
+</head>
+<body>
+{% include 'home/main.html' %}
+
+{% block content %}
+<div class='modal_out' onclick="remove_modal()"></div>
+
+<div class='modal'>
+    <div class='modal_head row_left col'>
+        <p class='modal_item_name'>맛있는 닭갈비 볶음밥 앗 신발보다 싸다 이재훈120520+20</p>
+        <div class="modal_item_star star-ratings"><div id='item_star' class="star-ratings-fill space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><div class="star-ratings-base space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div></div>
+        <div class='modal_item_score'>8.8</div>
+        <div class='modal_item_ratio'>긍정비율 89%</div>
+        <div class='modal_item_trend col row' onclick="show_trend()"><button class='trend_button'>TREND</button></div>
+    </div>
+
+    <div class='modal_item_img row'><a href="main.html" target="_blank"><img src="image/2.jpg"></a></div>
+    <div class='a3_text1'>대표 리뷰</div>
+    <div class='a3_text2'>AI를 통해 분석된 키워드, 대표리뷰입니다</div>
+    <div class='a1_box row'>
+        <div class='a1'>
+            <div class='a1_content row_left col'>
+                <div class='a1_keyword'>배송</div>
+                <div class='a1_bar'><div class='a1_green_bar'><div class='a1_white_bar'></div></div></div>
+                <div class='a1_ratio'>50.00%</div>
+                <div class='a1_text row_left'>키 165에 몸무게 98인데 살짝 작아요</div>
+            </div>
+        </div>
+    </div>
+
+        <div class='a2 row'>
+            <div class='a2_positive_box'>
+                <div class='a2_positive row_left col'>긍정 리뷰</div>
+                <div class='a2_text1'>전체 문장이 긍정적이라고 판단된 리뷰입니다.</div>
+                <div class='a2_positive_texts'>
+                    <div class='p_text_box' onclick="show_detail()"> 
+                        <div class='p_text'>
+                            <h5 style="display:inline; color: green">오늘시킨감자가오늘시킨감자가오늘시킨감자가</h5>
+                            <h5 style="display:inline; color: #B60202">참으로 맛있네요참으로 맛있네요참으로 맛있네요</h5>
+                            <h5 style="display:inline; color:lightgray">아마도아마도아마도아마도아마도아마도</h5>
+                            <h5 style="display:inline; color: green">오늘시킨감자가오늘시킨감자가오늘시킨감자가</h5>
+                            <h5 style="display:inline; color: rgba(255, 0, 0, 0.747)">참으로 맛있네요참으로 맛있네요참으로 맛있네요</h5>
+                        </div>
+                        <div class="row_left">
+                            <div class="star-ratings"><div class="star-ratings-fill space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><div class="star-ratings-base space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div></div>
+                            <div class='detail_score'>9.8</div>
+                            <div class='hash'>#배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송#배송 </div>
+                        </div>
+                    </div>
+                    <div class='p_text_box' onclick="show_detail()"> 
+                        <div class='p_text'>
+                            <h5 style="display:inline; color: green">오늘시킨감자가오늘시킨감자가오늘시킨감자가</h5>
+                            <h5 style="display:inline; color: rgba(255, 0, 0, 0.747)">참으로 맛있네요참으로 맛있네요참으로 맛있네요</h5>
+                            <h5 style="display:inline; color:lightgray">아마도아마도아마도아마도아마도아마도</h5>
+                            <h5 style="display:inline; color: green">오늘시킨감자가오늘시킨감자가오늘시킨감자가</h5>
+                            <h5 style="display:inline; color: rgba(255, 0, 0, 0.747)">참으로 맛있네요참으로 맛있네요참으로 맛있네요</h5>
+                        </div>
+                        <div class="row_left">
+                            <div class="star-ratings"><div class="star-ratings-fill space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><div class="star-ratings-base space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div></div>
+                            <div class='detail_score'>9.8</div>
+                            <div class='hash'>#배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송#배송 #배송 </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class='a2_negative_box'>
+                <div class='a2_negative row_left col'>부정 리뷰</div>
+                <div class='a2_text1'>전체 문장이 부정적이라고 판단된 리뷰입니다.</div>
+                <div class='a2_negative_texts'>
+                    <div class='n_text_box' onclick="show_detail()">  <!--  onclick="show_detail()"  -->
+                        <div class='n_text'>
+                            <h5 style="display:inline; color: darkgreen">오늘시킨감자가오늘시킨감자가오늘시킨감자가</h5>
+                            <h5 style="display:inline; color: darkred">참으로 맛있네요참으로 맛있네요참으로 맛있네요</h5>
+                            <h5 style="display:inline">아마도아마도아마도아마도아마도아마도</h5>
+                        </div>
+
+                        <div class="row_left">
+                            <div class="star-ratings"><div class="star-ratings-fill space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><div class="star-ratings-base space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div></div>
+                            <div class='detail_score'>7.5</div>
+                            <div class='hash'>#배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 #배송 </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class='a3'>
+            <div class='a3_text1'>키워드를 선택해주세요</div>
+            <div class='a3_text2'>선택된 키워드를 바탕으로 상품 추천이 제공됩니다</div>
+
+            <div class='recommend'>
+                <div class='recommend_box col'>
+                    <form class="form_shape" action="/home/keyrecommendation/{{ click_Product.id }}/" method="post">
+                        <input type="checkbox" name="rGroup" value="{{ click_product_keyword.keyword }}"id="r1">
+                        <label for="r1"class='recommend_keyword'><div class='row'>배송</div></label>
+                        <input type="checkbox" name="rGroup" value="{{ click_product_keyword.keyword }}"id="r2">
+                        <label for="r2"class='recommend_keyword'><div class='row'>배송</div></label>
+
+                        <div class='submit_keyword row'>
+                            <input class='submit_button' type="submit" value="선택완료">
+                            <input class='reset_button' type="reset" value="초기화">
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class='row'>
+                <div class='recommend_img_box row'>
+                    <a class='recommend_img' href="main.html" style="text-decoration: none; color:black;">
+                        <p class='recommend_img_title'>[업타운홀릭]10+20%! 가을신상 코드[업타운홀릭]10+20%! 가을신상 코드</p>
+                        <img src="image/1.jpg" class='r_img1'style='border-radius: 15px 15px 15px 15px;'>
+                    </a>
+
+                    <a class='recommend_img' href="main.html" style="text-decoration: none; color:black;">
+                        <p class='recommend_img_title'>[업타운홀릭]10+20%! 가을신상 코드</p>
+                        <img src="image/1.jpg" class='r_img1'style='border-radius: 15px 15px 15px 15px;'>
+                    </a>
+
+                    <a class='recommend_img' href="main.html" style="text-decoration: none; color:black;">
+                        <p class='recommend_img_title'>[업타운홀릭]10+20%! 가을신상 코드</p>
+                        <img src="image/1.jpg" class='r_img1'style='border-radius: 15px 15px 15px 15px;'>
+                    </a>
+                </div>
+            </div>
+        </div>
+</div>
+    <script src="{% static '/main.js' %}"></script>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trend</title>
+    <link rel="stylesheet" href="trend.css">
+    <link rel="stylesheet" href="modal.css">
+</head>
+<body>
+    <div class='trend_out' onclick="remove_trend()"></div>
+
+    <div class='trend'>
+        <p class='trend_item_name'>스포츠/레저</p>
+
+        <div class='data_analysis'>
+            <div class='data1_title'>카테고리 검색 빈도</div>
+            <div class="trend_sub_title"> 분석을 통한 해당 상품 카테고리 검색 빈도수를 출력합니다 </div>
+            <div class='data1 row'><img src="image/line_chart.png"  width='1200px' height='640px'></div>
+            <div class="data2_title">키워드 분석</div>
+            <div class="trend_sub_title"> 분석을 통한 해당 상품 카테고리를 막대 차트로 시각화합니다 </div>
+            <div class='data2 row'><img src="image/bar_chart.png" width='1200px' height='640px'></div>
+            <div class='data3_title'>워드 클라우드</div>
+            <div class="trend_sub_title"> 분석을 통한 해당 상품 카테고리를 워드클라우드로 시각화합니다 </div>
+            <div class='data3 row'><img src="image/wordcloud.jpg"  width='1200px' height='640px'></div>
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>

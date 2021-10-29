@@ -1,0 +1,173 @@
+/* detail */
+
+.detail {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1300px;
+  height: 90vh;
+  background-color: #181818;
+  z-index: 5;
+  display: none;
+  overflow: auto;
+}
+
+.detail::-webkit-scrollbar {
+  display: none;
+}
+
+.detail_out {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  opacity: 0.8;
+  z-index: 4;
+  display: none;
+}
+
+.line {
+  background-color: white;
+  width: 1px;
+  height: 900px;
+}
+
+/* detail review */
+
+.detail_main {
+  margin: 0px 0px 150px 0px;
+}
+
+.detail_text {
+  max-width: 650px;
+  font-size: 20px;
+  margin: 50px 0px 0px 0px;
+}
+
+.detail_text_score {
+  color: white;
+  font-size: 15px;
+}
+
+.detail_review {
+  width: 100%;
+  margin: 100px 0px 0px 0px;
+}
+
+.detail_a1,
+.detail_a2,
+.detail_a3,
+.detail_a4 {
+  width: 590px;
+  height: 450px;
+}
+
+/* a1 */
+
+.detail_a1_box {
+  overflow-y: scroll;
+  height: 300px;
+  margin: 20px 0px 0px 0px;
+}
+
+.detail_a1_box::-webkit-scrollbar {
+  display: none;
+}
+
+.detail_a1_content {
+  margin: 20px 0px 50px 60px;
+  height: 40px;
+}
+
+.detail_a1_keyword {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0px 1vw 0px 1vw;
+  width: 150px;
+  color: white;
+}
+
+.detail_a1_bar {
+  font-size: 30px;
+  font-weight: bold;
+  width: 250px;
+}
+.detail_a1_ratio {
+  font-size: 15px;
+  font-weight: bold;
+  position: relative;
+  left: -150px;
+  color: white;
+}
+
+/* a2 */
+
+/* a3 */
+
+.detail_a3_box {
+  overflow-y: scroll;
+  height: 300px;
+  margin: 20px 0px 0px 0px;
+}
+
+.detail_a3_box::-webkit-scrollbar {
+  display: none;
+}
+
+.detail_a3_content {
+  margin: 10px 0px 15px 60px;
+  height: 40px;
+}
+
+.detail_a1_keyword {
+  color: white;
+  font-size: 15px;
+  width: 500px;
+}
+
+/* a4 */
+
+.detail_a4_box {
+  margin: 25px 0px 0px 0px;
+}
+
+.pie-chart {
+  position: relative;
+  display: inline-block;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  transition: 0.3s;
+  margin: 3vh 0px 0px 0px;
+  color: white;
+}
+span.center {
+  background: #181818;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 200px;
+  font-size: 30px;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.sss_review:hover {
+  text-decoration: underline;
+  text-decoration-color: lightcoral;
+  text-decoration-style: wavy;
+  text-decoration-thickness: 15%;
+}
+
+.sss_review {
+  position: relative;
+}
