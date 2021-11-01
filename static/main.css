@@ -91,7 +91,15 @@ a {
   animation-fill-mode: forwards;
   z-index: 3;
 }
-
+.top2 {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100vw;
+  height: 100px;
+  opacity: 1;
+  z-index: 3;
+}
 .title_box {
   width: 350px;
   font-size: 50px;
@@ -118,10 +126,14 @@ a {
   z-index: 3;
 }
 
+.icons{
+  width:100px;
+  height:50px;
+  margin:20px 40px 0px 0px;
+}
+
 .icon{
-  width:200px;
-  height:100%;
-  background-color: red;
+  margin:0px 30px 0px 0px;
 }
 
 /* bot */
@@ -137,6 +149,16 @@ a {
   animation-fill-mode: forwards;
   z-index: 3;
 }
+
+.bot2 {
+  width: 100vw;
+  position: absolute;
+  top: 15vh;
+  opacity: 1;
+  z-index: 3;
+}
+
+
 
 * {
   margin: 0;

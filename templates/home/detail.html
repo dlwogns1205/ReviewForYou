@@ -20,7 +20,7 @@
 
     <div class='modal_head row_side col'>
         <div class="row">
-            <p class='modal_item_name'>{{ click_Product.product_name }}</p>
+            <p class='modal_item_name'><a href="/modal/{{ click_Product.id }}/">{{ click_Product.product_name }}</a></p>
             <div class="modal_item_star star-ratings"><div style="width : calc(15*{{ click_Product.total_value }}px)" id='item_star' class="star-ratings-fill space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><div class="star-ratings-base space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div></div>
             <div class='modal_item_score'>{{ click_Product.total_value }}</div>
             <div class='modal_item_ratio'>긍정비율 {{ click_Product.pos_neg_rate }}%</div>
@@ -39,12 +39,12 @@
                          style="display: inline">
                         <input type="hidden" name='review' value='{{ original }}'>
                         {% for word,value in line %}
-                        {% if value >= 1 %}
+                        {% if value >= 0.7 %}
                         <h5 class="mt-0"
-                            style="display:inline; color: darkgreen;" >{{ word }}</h5>
-                        {% elif value <= -1 %}
+                            style="display:inline; color: #45892C;" >{{ word }}</h5>
+                        {% elif value <= -0.7 %}
                         <h5 class="mt-0"
-                            style="display:inline; color: darkred; " >{{ word }}</h5>
+                            style="display:inline; color: #AD2525; " >{{ word }}</h5>
                         {% else %}
                         <h5 class="mt-0" style="display:inline">{{ word }}</h5>
                         {% endif %}
@@ -77,11 +77,20 @@
 
             <div class='detail_a3'>
                 <div class='a3_text1'>유사 리뷰</div>
-                <div class='a3_text2'>선택한 리뷰와 유사한 리뷰들을 출력합니다</div>
+                <div class='a3_text2'>선택된 리뷰와 유사한 리뷰들을 출력합니다</div>
                 <div class='detail_a3_box'>
                     {% for sim_review in similar_review %}
                     <div class='detail_a3_content row_left col'>
-                        <div class='detail_a3_keyword'>{{sim_review}}</div>
+                        <div class='detail_a3_keyword'>
+                            {% for word,flag in sim_review %}
+                                {% if flag == 1 %}
+                                <h5 class="mt-0 h1"
+                                    style="display: inline;" >{{ word }}</h5>
+                                {% else %}
+                                <h5 class="mt-0" style="display: inline;">{{ word }}</h5>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
@@ -98,16 +107,16 @@
                 <div class="xai">
                     <div class='detail_a2_box'>
                         {% for word,value in sen_xai %}
-                            {% if value >= 0.5 %}
+                            {% if value >= 0.7 %}
                                 <div class="xai_text">
-                                    <div><h5 class="mt-0" style="display:inline; color: darkgreen">{{ word }}</h5></div>
-                                    <div class="row"><h5 class="mt-1" style="display:inline; color: darkgreen">{{ value }}</h5></div>
+                                    <div><h5 class="mt-0" style="display:inline; color: #45892C">{{ word }}</h5></div>
+                                    <div class="row"><h5 class="mt-1" style="display:inline; color: #45892C">{{ value }}</h5></div>
                                 </div>
 
-                                {% elif value <= -0.5 %}
+                                {% elif value <= -0.7 %}
                                 <div class="xai_text">
-                                    <div><h5 class="mt-0" style="display:inline; color: darkred">{{ word }}</h5></div>
-                                    <div class="row"><h5 class="mt-1" style="display:inline; color: darkred">{{ value }}</h5></div>
+                                    <div><h5 class="mt-0" style="display:inline; color: #AD2525">{{ word }}</h5></div>
+                                    <div class="row"><h5 class="mt-1" style="display:inline; color: #AD2525">{{ value }}</h5></div>
                                 </div>
                                 {% else %}
                                 <div class="xai_text">
@@ -138,11 +147,21 @@
 
         <div class='row'>
             <div class='recommend_img_box row'>
-                {% for model in recom_model%}
-                <a class='recommend_img' href="main.html" style="text-decoration: none; color:black;">
-                    <p class='recommend_img_title'>{{model.product_name}}</p>
-                    <img src="{{model.img_src}}" class='r_img1'style='border-radius: 15px 15px 15px 15px;'>
-                </a>
+                {% for model,keywords in recom_model %}
+                    <a class='recommend_img' href="/modal/{{ model.id }}/"
+                       style="text-decoration: none; color:black;"><p
+                            class='recommend_img_title'>{{ model.product_name }}</p><img
+                            src="{{ model.img_src }}" class='r_img1'
+                            style='border-radius: 15px 15px 15px 15px;'>
+                        <div class="preview_box row">
+                            <div>
+                        {% for word, rate in keywords %}
+                            <div class="preview_text">{{ word }} : {{ rate }}%</div>
+                            <div class='detail_a1_bar'><div class='a1_green_bar' style="height: 15px"><div class='a1_white_bar' style="width : calc(240px - 2.4*{{ rate }}px ); height: 14px; background-color:rgba(226, 223, 223, 0.973); "></div></div></div>
+                        {% endfor %}
+                            </div>
+                        </div>
+                    </a>
                 {% endfor %}
             </div>
         </div>
@@ -151,7 +170,7 @@
 
 <script>
 max_value = 50;
-draw({{similar_rate}}+1, '.pie-chart1', 'green');
+draw({{similar_rate}}+1, '.pie-chart1', '#45892C');
  function draw(max, classname, colorname){
     var i=1;
      var func1 = setInterval(function(){

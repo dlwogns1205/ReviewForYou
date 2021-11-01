@@ -109,7 +109,6 @@
 
 .mt-0{
   font-size:20px;
-
 }
 
 
@@ -143,6 +142,7 @@
 
 .detail_a3_content {
   margin: 10px 0px 15px 60px;
+  position: relative;
 }
 
 .detail_a3_keyword {
@@ -189,8 +189,12 @@ span.center {
   /*text-decoration-color: lightcoral;*/
   /*text-decoration-style: wavy;*/
   /*text-decoration-thickness: 15%;*/
-  background:linear-gradient(to top,rgba(255,255,255,1) 50%,transparent 50%);
+  background:linear-gradient(to top, darkslateblue 40%,transparent 10%);
 }
 .sss_review {
   position: relative;
+}
+
+.h1{
+   background:linear-gradient(to top, #AA5939 10%,transparent 30%);
 }

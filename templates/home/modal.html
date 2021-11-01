@@ -8,6 +8,10 @@
     <title>modal</title>
     <link rel="stylesheet" href="{% static '/main.css' %}">
     <link rel="stylesheet" href="{% static '/modal.css' %}">
+    <link rel="stylesheet" href="{% static '/detail.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 </head>
 <body>
 {% include 'home/main.html' %}
@@ -18,7 +22,7 @@
 <div class='modal'>
     <div class='modal_head row_side col'>
         <div class="row_left">
-            <p class='modal_item_name'>{{ click_Product.product_name }}</p>
+            <p class='modal_item_name'><a href="/modal/{{ click_Product.id }}/">{{ click_Product.product_name }}</a></p>
             <div class="modal_item_star star-ratings"><div style="width : calc(15*{{ click_Product.total_value }}px)" id='item_star' class="star-ratings-fill space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div><div class="star-ratings-base space-x-2 text-lg"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div></div>
             <div class='modal_item_score'>{{ click_Product.total_value }}</div>
             <div class='modal_item_ratio'>긍정비율 {{ click_Product.pos_neg_rate }}%</div>
@@ -53,10 +57,10 @@
                     <div class='p_text_box'>
                         <div class='p_text'>
                             {% for word,value in morph_val %}
-                                {% if value >= 1 %}
-                                <h5 style="display:inline; color: darkgreen">{{ word }}</h5>
-                                {% elif value <= -1 %}
-                                <h5 style="display:inline; color: darkred">{{ word }}</h5>
+                                {% if value >= 0.7 %}
+                                <h5 style="display:inline; color: #45892C">{{ word }}</h5>
+                                {% elif value <= -0.7 %}
+                                <h5 style="display:inline; color: #AD2525">{{ word }}</h5>
                                 {% else %}
                                 <h5 style="display:inline">{{ word }}</h5>
                                 {% endif %}
@@ -84,10 +88,10 @@
                     <div class='n_text_box' >
                         <div class='n_text'>
                             {% for word,value in morph_val %}
-                            {% if value >= 1 %}
-                            <h5 style="display:inline; color: darkgreen">{{ word }}</h5>
-                            {% elif value <= -1 %}
-                            <h5 style="display:inline; color: darkred">{{ word }}</h5>
+                            {% if value >= 0.7 %}
+                            <h5 style="display:inline; color: #45892C">{{ word }}</h5>
+                            {% elif value <= -0.7 %}
+                            <h5 style="display:inline; color: #AD2525">{{ word }}</h5>
                             {% else %}
                             <h5 style="display:inline">{{ word }}</h5>
                             {% endif %}
@@ -130,12 +134,21 @@
 
             <div class='row'>
                 <div class='recommend_img_box row'>
-                     {% for model in recom_model %}
+                    {% for model,keywords in recom_model %}
                     <a class='recommend_img' href="/modal/{{ model.id }}/"
                        style="text-decoration: none; color:black;"><p
                             class='recommend_img_title'>{{ model.product_name }}</p><img
                             src="{{ model.img_src }}" class='r_img1'
-                            style='border-radius: 15px 15px 15px 15px;'></a>
+                            style='border-radius: 15px 15px 15px 15px;'>
+                        <div class="preview_box row">
+                            <div class="preview_text_box">
+                        {% for word, rate in keywords %}
+                            <div class="preview_text">{{ word }} : {{ rate }}%</div>
+                            <div class='detail_a1_bar'><div class='a1_green_bar' style="height: 15px"><div class='a1_white_bar' style="width : calc(240px - 2.4*{{ rate }}px ); height: 14px; background-color:rgba(226, 223, 223, 0.973); "></div></div></div>
+                        {% endfor %}
+                            </div>
+                        </div>
+                    </a>
                     {% endfor %}
                 </div>
             </div>
