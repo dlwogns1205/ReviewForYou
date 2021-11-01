@@ -7,7 +7,7 @@ from multiprocessing import Pool
 from functools import partial
 import pandas as pd
 import numpy as np
-from konlpy.tag import Mecab
+from eunjeon import Mecab
 import gensim
 from sklearn.metrics.pairwise import cosine_similarity
 mecab = Mecab()
@@ -35,7 +35,7 @@ def DNN_func(sentence):
     after_preprocess = re.sub(r" {2,}", " ", hangul.sub(' ', sentence))
     tmp = [text[0] for text in mecab.pos(after_preprocess) if
            text[1][0] != 'E' and text[1][0] != 'S' and text[1][0] != 'X' and text[1][0] != 'J' and text[
-               1] != 'UNKNOWN' and text[0] != '.']
+               1] != 'UNKNOWN' and text[0] != '.' and text[0] !='옷']
     value = [float(con[con[:, 0] == word, 1]) if word in word_index else 0 for word in tmp]
     if len(value) >= 20:
         value = value[:20]
@@ -90,8 +90,17 @@ def DNN_func(sentence):
                 tmp.append(small)
 
 
-
     return before_text, [*map(lambda x: round(x, 2), tmp)], positive_or_negative(value), values
+
+def make_score(x):
+    if x < -2.16:
+        return -2
+    elif x >= 1.84:
+        return 2
+    else:
+        return x+0.16
+def make_score2(x):
+    return x/4 +0.5
 
 def Crawling_11st(product_num, pageNo):
     try:
@@ -104,14 +113,14 @@ def Crawling_11st(product_num, pageNo):
             if rev['subject']:
                 review = rev['subject'].replace('<br>', ' ')
                 if len(review) <= 3:
-                    temp.append([5, '좋아요', ['좋아요'], [1.76], 0.91899])
+                    temp.append([5, '좋아요', ['좋아요'], [1.76], 9.1899])
                     continue
                 score = str(rev['evlPnt'])
                 xai_before_text = []
                 xai_value = []
-                xai_positive_negative = []
+
                 for sen in sss(review):
-                    before_text, vs_1, positive_negative, vs_2 = DNN_func(sen)
+                    before_text, vs_1, _ , vs_2 = DNN_func(sen)
                     xai_before_text.extend(before_text)
                     value=[]
                     for w, v1, v2 in zip(before_text, vs_1, vs_2):
@@ -120,19 +129,15 @@ def Crawling_11st(product_num, pageNo):
                         v0 = round((v1 + v2) / 2, 2)
                         value.append(v0)
                     xai_value.extend(value)
-                    xai_positive_negative.append(positive_negative)
-                print("-------------------------------")
-                print(sum(xai_positive_negative)/len(xai_positive_negative))
-                print(sigmoid(sum(xai_value)))
-                temp.append([score, review,xai_before_text,xai_value,sigmoid(sum(xai_value))])
-                # temp.append([score, review,xai_before_text,xai_value,sum(xai_positive_negative)/len(xai_positive_negative)])
+
+                temp.append([score, review, xai_before_text, xai_value,round(make_score2(make_score(sum(xai_value)/len(xai_value)))*10,1) ])
 
         return temp
     except:
         temp = []
         for i in range(10):
             temp.append(
-                [5, '좋아요', ['좋아요'], [1.76], 0.91899])
+                [5, '좋아요', ['좋아요'], [1.76], 9.1899])
         return temp
 
 def Crawling_coupang(product_num, pageNo):
@@ -146,14 +151,14 @@ def Crawling_coupang(product_num, pageNo):
             if soup.select('div.sdp-review__article__list__review__content')[s]:
                 review = re.sub('[\n\s]+', ' ', soup.select('div.sdp-review__article__list__review__content')[s].text.strip())  # soup.select('article')[s].text
                 if len(review) <= 3:
-                    temp.append([5, '좋아요', ['좋아요'], [1.76], 0.91899])
+                    temp.append([5, '좋아요', ['좋아요'], [1.76], 9.1899])
                     continue
                 score = '5'
                 xai_before_text = []
                 xai_value = []
-                xai_positive_negative = []
+
                 for sen in sss(review):
-                    before_text, vs_1, positive_negative, vs_2 = DNN_func(sen)
+                    before_text, vs_1, _ , vs_2 = DNN_func(sen)
                     xai_before_text.extend(before_text)
                     value = []
                     for w, v1, v2 in zip(before_text, vs_1, vs_2):
@@ -162,26 +167,28 @@ def Crawling_coupang(product_num, pageNo):
                         v0 = round((v1 + v2) / 2, 2)
                         value.append(v0)
                     xai_value.extend(value)
-                    xai_positive_negative.append(positive_negative)
-                temp.append([score, review, xai_before_text, xai_value, sum(xai_positive_negative) / len(xai_positive_negative)])
+
+                temp.append([score, review, xai_before_text, xai_value, round(make_score2(make_score(sum(xai_value)/len(xai_value)))*10,1)])
 
         return temp
     except:
         temp = []
         for i in range(10):
             temp.append(
-                [5, '좋아요', ['좋아요'], [1.76], 0.91899])
+                [5, '좋아요', ['좋아요'], [1.76], 9.1899])
         return temp
 
 def sss(text):
     text = re.sub(r" {2,}", " ", hangul.sub(' ', text))
     end_char = ['요', '다', '죠']
     avoid_char = ['보다', '하려다', '하다', '려다']
+    special_char = ['느림']
     new_sentences = []
     ts = text.split()
     start, end, flag = 0, 0, 0
     for i in range(len(ts)):
-        if len(ts[i]) >= 2 and ts[i][-1] in end_char and ts[i][-2:] not in avoid_char: # and mecab.pos(ts[i])[-1][1] != 'NNG'
+        if (len(ts[i]) >= 2 and ts[i][-1] in end_char and ts[i][-2:] not in avoid_char)\
+                or ('ETN' in mecab.pos(ts[i])[-1][1]) or (ts[i][-2:] in special_char): # and mecab.pos(ts[i])[-1][1] != 'NNG'
             end = i
             new_sentences.append(' '.join(ts[start:end + 1]).strip())
             start = end + 1

@@ -33,8 +33,8 @@ def product_detail(request, id):
     click_Product = ProductModel.objects.get(pk=id)
     click_Product_keyword = ProductKeyword.objects.filter(product_id=id)
     all_comments = ReviewModel.objects.filter(product_id=id)  # .order_by('score')
-    positive_comments = [c for c in all_comments if c.score >= 7 and len(c.review.split()) <= 40]
-    negative_comments = [c for c in all_comments if c.score <= 3 and len(c.review.split()) <= 40]
+    positive_comments = [c for c in all_comments if c.score >= 6.5 and len(c.review.split()) <= 40]
+    negative_comments = [c for c in all_comments if c.score <= 3.5 and len(c.review.split()) <= 40]
 
     pos_review = []
     for pos in positive_comments:
@@ -50,7 +50,7 @@ def product_detail(request, id):
         return render(request, 'home/modal.html',
                       {'TOP_Products': T_Products, 'RECENT_Products': R_Products, 'click_Product': click_Product,
                        'click_Product_keyword': click_Product_keyword, 'pos_review': pos_review[:30],
-                       'neg_review': neg_review[:30]})
+                       'neg_review': neg_review[:50]})
     if request.method == 'POST':
         keywords = request.POST.getlist("rGroup", '')
         if keywords == '':
@@ -58,7 +58,7 @@ def product_detail(request, id):
                           {'error1': '1개 이상 선택하세요!', 'TOP_Products': T_Products, 'RECENT_Products': R_Products,
                            'click_Product': click_Product,
                            'click_Product_keyword': click_Product_keyword, 'pos_review': pos_review[:30],
-                           'neg_review': neg_review[:30]})
+                           'neg_review': neg_review[:50]})
         categories = ProductModel.objects.get(id=id).categories.split(', ')
         all_productmodel = ProductModel.objects.exclude(id=id)
         models = set()
@@ -276,7 +276,7 @@ def url_search(request):
                     review_model.keywords = result_words
                     review_model.product_id = product
                     review_model.review = " ".join(xai_before_text[index])
-                    tmp_score = round(float(xai_positive_negative[index]) * 10, 1)
+                    tmp_score = xai_positive_negative[index]
                     review_model.score = tmp_score
                     product_score_list.append(tmp_score)
                     review_model.morph = " ".join(xai_before_text[index])

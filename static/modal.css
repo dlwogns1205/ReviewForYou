@@ -386,7 +386,7 @@ input[type="checkbox"] {
 .a1_green_bar {
   width: 240px;
   height: 33px;
-  background-color: rgba(73, 210, 88, 0.8);
+  /*background-color: rgba(73, 210, 88, 0.8);*/
   position: relative;
   display: flex;
   border-radius: 5px 5px 5px 5px;
