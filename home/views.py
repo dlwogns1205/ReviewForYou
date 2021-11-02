@@ -171,9 +171,9 @@ def review_detail(request, review_id):
             if len(w) == 0:
                 break
             v = round((v1 + v2) / 2, 2)
-            print(w, ':', v1, v2, end='//')
+            # print(w, ':', v1, v2, end='//')
             sen_xai.append((w, v))
-        print()
+        # print()
 
         text = []
         for review in other_reivew:
@@ -194,21 +194,21 @@ def review_detail(request, review_id):
         other_reivew = ReviewModel.objects.filter(product_id=product_id).exclude(id=review_id)
 
         ws, vs_1, rate, vs_2 = DNN_func(selected_review)
-        print(rate)
+        # print(rate)
         sen_xai = []
         for w, v1, v2 in zip(ws, vs_1, vs_2):
             if len(w) == 0:
                 break
             v = round((v1 + v2) / 2, 2)
-            print(w, ':', v1, v2, end='//')
+            # print(w, ':', v1, v2, end='//')
             sen_xai.append((w, v))
-        print()
+        # print()
 
         text = []
         for review in other_reivew:
             text.append([review.score, review.review])
         review_data, vocab_sorted = return_review_data(text)
-        print(selected_review, rate[0])
+        # print(selected_review, rate[0])
         result_same_sentences, same_rate = result_of_selected_review_s_same_reviews(selected_review, rate[0], review_data, vocab_sorted)
         same_rate = round(same_rate,1)
 
@@ -246,10 +246,10 @@ def url_search(request):
                     site = 1
                     tem_data, pre_product_name, img_src, price, review_len, categories, result, keyword, keyword_ratio = lets_do_crawling(
                         site, product_num)
-                elif 'coupang' in url_src:
+                elif 'naver' in url_src:
                     site = 2
                     tem_data, pre_product_name, img_src, price, review_len, categories, result, keyword, keyword_ratio = lets_do_crawling(
-                        site, product_num)
+                        site, product_num, url_src)
 
                 product_name = []
                 for sen in pre_product_name.split():

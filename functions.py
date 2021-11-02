@@ -140,27 +140,35 @@ def Crawling_11st(product_num, pageNo):
                 [5, '좋아요', ['좋아요'], [1.76], 9.1899])
         return temp
 
-def Crawling_coupang(product_num, pageNo):
+
+def Crawling_Naver(product_num, merchant_num, store,pageNo):
     try:
-        url = 'https://www.coupang.com/vp/product/reviews?productId={}&page={}&size={}&sortBy=ORDER_SCORE_ASC&ratings&q&viRoleCode=3&ratingSummary=true'.format(
-            product_num, pageNo, 10)
-        data = requests.get(url, headers=headers)
-        soup = BeautifulSoup(data.text, 'html.parser')
+        if store == 'shopping':
+            url = 'https://{}.naver.com/v1/reviews/paged-reviews?page={}&pageSize=10&merchantNo={}&originProductNo={}&sortType=REVIEW_RANKING'.format(
+                store, pageNo, merchant_num, product_num)  # REVIEW_RANKING
+        elif store == 'smartstore':
+            url = 'https://{}.naver.com/i/v1/reviews/paged-reviews?page={}&pageSize=10&merchantNo={}&originProductNo={}&sortType=REVIEW_RANKING'.format(
+                store, pageNo, merchant_num, product_num)  # REVIEW_RANKING
+        elif store == 'brand':
+            url = 'https://{}.naver.com/n/v1/reviews/paged-reviews?page={}&pageSize=10&merchantNo={}&originProductNo={}&sortType=REVIEW_RANKING'.format(
+                store, pageNo, merchant_num, product_num)  # REVIEW_RANKING
+        response = urlopen(url)
+        json_data = json.load(response)['contents']
         temp = []
-        for s in range(10):
-            if soup.select('div.sdp-review__article__list__review__content')[s]:
-                review = re.sub('[\n\s]+', ' ', soup.select('div.sdp-review__article__list__review__content')[s].text.strip())  # soup.select('article')[s].text
+        for rev in json_data:
+            if rev['reviewContent']:
+                review = rev['reviewContent'].replace('/n', ' ')
                 if len(review) <= 3:
                     temp.append([5, '좋아요', ['좋아요'], [1.76], 9.1899])
                     continue
-                score = '5'
+                score = rev['createDate'].split('T')[0]
                 xai_before_text = []
                 xai_value = []
 
                 for sen in sss(review):
                     before_text, vs_1, _ , vs_2 = DNN_func(sen)
                     xai_before_text.extend(before_text)
-                    value = []
+                    value=[]
                     for w, v1, v2 in zip(before_text, vs_1, vs_2):
                         if len(w) == 0:
                             break
@@ -168,7 +176,7 @@ def Crawling_coupang(product_num, pageNo):
                         value.append(v0)
                     xai_value.extend(value)
 
-                temp.append([score, review, xai_before_text, xai_value, round(make_score2(make_score(sum(xai_value)/len(xai_value)))*10,1)])
+                temp.append([score, review, xai_before_text, xai_value,round(make_score2(make_score(sum(xai_value)/len(xai_value)))*10,1) ])
 
         return temp
     except:
@@ -481,13 +489,13 @@ def keyword_in_review(temp_review, keyword):
 def similarity_and_major_similar_sentence(review_data, vocab_sorted, selected_review, rate):  # idx : 선택된 리뷰에서의 선택한 리뷰의 idx
     check_vo = [w for w, v in vocab_sorted if v >= 3 and w not in useless_NNG]
     most_N = ' '.join([w for w in check_vo]).strip()
-    print(most_N)
+    # print(most_N)
     all_line_of_review = []
-    print(mecab.pos(selected_review))
+    # print(mecab.pos(selected_review))
     for w, p in mecab.pos(selected_review):
         if (p == 'NNG' or p=='NNP') and w in most_N and w not in all_line_of_review :
             all_line_of_review.append(w)
-    print(all_line_of_review)
+    # print(all_line_of_review)
     if len(all_line_of_review) == 0:
         return [], [], [], []
 
@@ -499,10 +507,10 @@ def similarity_and_major_similar_sentence(review_data, vocab_sorted, selected_re
                 all_review_of_same_word.append(review_data.loc[i, 'review'])
                 break
     all_rev_of_same_word = []
-    print(float(rate - 0.15), float(rate + 0.15))
+    # print(float(rate - 0.15), float(rate + 0.15))
     for rev in all_review_of_same_word:
         _, _, pos_neg, _ = DNN_func(rev)
-        print(pos_neg)
+        # print(pos_neg)
         if float(rate - 0.15) < float(pos_neg) < float(rate + 0.15) and rev not in all_rev_of_same_word:
             all_rev_of_same_word.append(rev)
 
@@ -520,10 +528,10 @@ def similarity_and_major_similar_sentence(review_data, vocab_sorted, selected_re
     cosine_similarities_for_similarity = cosine_similarity(for_similarity, for_similarity)
     selected_line_with_similar_review_idx = [[i, r] for i, r in enumerate(cosine_similarities_for_similarity[-1])]
     result_sorted = sorted(selected_line_with_similar_review_idx, key=lambda x: x[1], reverse=True)
-    print(result_sorted)
+    # print(result_sorted)
     result_same_sentences = []
     for index, val in result_sorted[1:]:
-        print(val)
+        # print(val)
         if val >= 0.6:
             result_same_sentences.append(all_rev_of_same_word[index])
     # print(len(all_rev_of_same_word), len(result_same_sentences), len(result_sorted), len(all_line_of_review))
@@ -554,7 +562,7 @@ def result_of_selected_review_s_same_reviews(selected_review, rate, review_data,
             each_rev.append(result_check_word_flag)
         checked_same_senteces.append(each_rev)
 
-    print(checked_same_senteces)
+    # print(checked_same_senteces)
     for idx, val in result_sorted[1:]:
         if val > 0.5:
             same += 1
@@ -562,7 +570,7 @@ def result_of_selected_review_s_same_reviews(selected_review, rate, review_data,
 
     return checked_same_senteces, same_rate
 
-def lets_do_crawling(site, product_num):
+def lets_do_crawling(site, product_num, url_src=None):
     if site == 1:
         url_basic = 'https://www.11st.co.kr/products/{}'.format(product_num)
         data = requests.get(url_basic, headers=headers)
@@ -580,9 +588,8 @@ def lets_do_crawling(site, product_num):
         img_src = soup.find('div', attrs={'class': 'img_full'}).find('img')['src']
         price = soup.find('ul', attrs={'class': 'price_wrap'}).find('span', attrs={'class': 'value'}).text
 
-        review_len = soup.find('strong', attrs={'class': 'text_num'}).text
-        review_len = int(re.sub('[^0-9]', '', review_len))
-
+        # review_len = soup.find('strong', attrs={'class': 'text_num'}).text
+        # review_len = int(re.sub('[^0-9]', '', review_len))
 
         pool = Pool(4)
         func = partial(Crawling_11st,product_num)
@@ -593,35 +600,43 @@ def lets_do_crawling(site, product_num):
         # text = [j for i in tem for j in i]
 
     elif site == 2:
-        url_basic = 'https://www.coupang.com/vp/products/{}'.format(product_num)
-        url_cate = url_basic + '/breadcrumb-gnbmenu'
-
+        url_basic = url_src
+        store = url_basic.split('//')[1].split('.')[0] # smartstore, brand, shopping
+        # print(store)
         data = requests.get(url_basic, headers=headers)
-        data_cate = requests.get(url_cate, headers=headers)
         soup = BeautifulSoup(data.text, 'html.parser')
-        soup_cate = BeautifulSoup(data_cate.text, 'html.parser')
+        product_detail = soup.find_all('script')[1].text.split(',')
 
-        category_path = soup_cate.find_all('a', attrs={'class': 'breadcrumb-link'})
-        categories = ''
-        for cate in category_path:
-            if categories == '':
-                categories = re.sub('[\n\s]+','',cate.text)
-            else:
-                categories = categories + ', ' + re.sub('[\n\s]+','',cate.text)
+        for detail in product_detail:
+            if '"payReferenceKey"' in detail:
+                merchant_num = detail.split(':')[1].replace('"', '')
+                break
 
-        product_name = soup.find('meta', attrs={'property': 'og:title'})['content']
-        img_src = soup.find('img', attrs={'class': 'prod-image__detail'})['src']
-        price = soup.find('span', attrs={'class': 'total-price'}).text.strip()
+        for detail in product_detail:
+            if '"sellerImmediateDiscountPolicyNo"' in detail:
+                product_num = re.sub('[^0-9]', '', detail.split(':')[2].replace('"', ''))
+                # print(product_num)
+                break
 
-        review_len = soup.find('span', attrs={'class': 'count'}).text
-        review_len = int(re.sub('[^0-9]', '', review_len))
+        product_info = soup.find_all('script')[0].text.split(',')
+
+        for info in product_info:
+            if '"category"' in info:
+                category = info.split(':')[1].replace('"', '')
+                categories = ', '.join(category.split('>'))
+
+        product_name = soup.find('h3', attrs={'class': '_3oDjSvLwq9 _copyable'}).text.strip()
+        img_src = soup.find('div', attrs={'class': '_23RpOU6xpc'}).find('img')['src']
+        price = soup.find('span', attrs={'class': '_1LY7DqCnwR'}).text
+        # review_len = 할 수 있으면 하기
 
         pool = Pool(4)
-        func = partial(Crawling_coupang, product_num)
-        tem = pool.map(func, range(1, 201))
+        func = partial(Crawling_Naver, product_num, merchant_num, store)
+        tem = pool.map(func, range(1, 71))
         pool.close()
         pool.join()
 
+        # print(product_num, merchant_num, store)
 
     text = [j for i in tem for j in i]
     tem_data = pd.DataFrame(text, columns=['score', 'review','xai_before_text','xai_value','xai_positive_negative'])
@@ -630,14 +645,15 @@ def lets_do_crawling(site, product_num):
         if tem_data.loc[i,'review'] == '좋아요':
             cnt+=1
 
-    print(len(tem_data))
-    print(cnt)
+    # print(len(tem_data))
+    # print(cnt)
 
     tem_data.drop_duplicates(['review'], inplace=True)
+    # print(tem_data['score'])
     if len(tem_data) > 500:
         tem_data = tem_data.sample(500)
     tem_data.reset_index(drop=True, inplace=True)
-    print(len(tem_data))
+    review_len = len(tem_data)
     result, keyword, vocab_sorted, review_data, keyword_ratio = result_of_code([*map(lambda x : [x[0],x[1]], text)])
 
     return tem_data, product_name, img_src, price, review_len, categories, result, keyword, keyword_ratio
