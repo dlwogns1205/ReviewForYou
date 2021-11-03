@@ -40,7 +40,7 @@
                 <div class='a1_keyword'>{{ click_product_keyword.keyword }}</div>
                 {% if click_product_keyword.keyword_positive <= 33 %}
                 <div class='a1_bar'><div class='a1_green_bar' style="background-color: #AD2525"><div class='a1_white_bar' style="width : calc(240px - 2.4*{{ click_product_keyword.keyword_positive }}px )"></div></div></div>
-                {% elif click_product_keyword.keyword_positive <= 66 %}
+                {% elif click_product_keyword.keyword_positive <= 60 %}
                 <div class='a1_bar'><div class='a1_green_bar' style="background-color: #AD801D"><div class='a1_white_bar' style="width : calc(240px - 2.4*{{ click_product_keyword.keyword_positive }}px )"></div></div></div>
                 {% else %}
                 <div class='a1_bar'><div class='a1_green_bar' style="background-color: #45892C"><div class='a1_white_bar' style="width : calc(240px - 2.4*{{ click_product_keyword.keyword_positive }}px )"></div></div></div>
@@ -152,7 +152,7 @@
                             <div class="preview_text">{{ word }} : {{ rate }}%</div>
                             {% if rate <= 33 %}
                             <div class='a1_bar'><div class='a1_green_bar' style="background-color: #AD2525; height: 14px"><div class='a1_white_bar' style="width : calc(240px - 2.4*{{ rate }}px ); height: 14px;"></div></div></div>
-                            {% elif rate <= 66 %}
+                            {% elif rate <= 60 %}
                             <div class='a1_bar'><div class='a1_green_bar' style="background-color: #AD801D; height: 14px"><div class='a1_white_bar' style="width : calc(240px - 2.4*{{ rate }}px );  height: 14px;)"></div></div></div>
                             {% else %}
                             <div class='a1_bar'><div class='a1_green_bar' style="background-color: #45892C; height: 14px"><div class='a1_white_bar' style="width : calc(240px - 2.4*{{ rate }}px ); height: 14px;)"></div></div></div>
