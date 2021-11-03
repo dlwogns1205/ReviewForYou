@@ -163,6 +163,7 @@ def Crawling_Naver(product_num, merchant_num, store,pageNo):
                     temp.append([5, '좋아요', ['좋아요'], [1.76], 9.1899])
                     continue
                 score = rev['createDate'].split('T')[0]
+                score = score.replace("-",".")
                 xai_before_text = []
                 xai_value = []
 

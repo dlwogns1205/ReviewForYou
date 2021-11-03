@@ -5,27 +5,31 @@ from PIL import Image
 from wordcloud import WordCloud
 import random
 from random import randint
-from datetime import date, timedelta
+from datetime import date, timedelta,datetime
 import matplotlib.pyplot as plt
+from collections import Counter
 font = fm.FontProperties(fname='./210Black.ttf')
 mask = Image.open('./cloud.png')
 mask = np.array(mask)
 
-def make_charts(data):
-    prev_year = date.today()- timedelta(days=90)
-    time_x =[prev_year + timedelta(days = i) for i in range(90)]
-    n, a = 10, []
-    for _ in range(90):
-        a.append(max(0,n + randint(-10,10)))
-        n = a[-1]
+def make_charts(data,date_arr):
+    date_arr = [*map(lambda x : datetime.date(datetime.strptime(x,"%Y.%m.%d")), date_arr)]
+    date_arr = Counter(date_arr)
 
+    tmp = {}
+    for i in date_arr.keys():
+        if i >= date.today() - timedelta(days=30):
+            tmp[i] = date_arr[i]
+            
+    tmp = sorted(tmp.items(), key= lambda x : x[0])
     fig, ax = plt.subplots(figsize=(15,8),facecolor="#181818")
     ax.patch.set_facecolor('#181818')
     for position in ['bottom', 'top','left','right']:
         ax.spines[position].set_color('#181818')
-    plt.plot(time_x,a, lw =3, color = 'white')
+    plt.plot([*map(lambda x : x[0],tmp)],[*map(lambda x : x[1],tmp)],lw =3, color = 'white')
     plt.tick_params(axis='x', colors='#F5E9F5',labelsize=15)
-    plt.tick_params(axis='y', colors='#F5E9F5',labelsize=15) 
+    plt.tick_params(axis='y', colors='#F5E9F5',labelsize=15)
+    plt.xticks(rotation=30)
     plt.xlabel("", color = 'white', fontsize=20)
     ax.grid(True,alpha=0.4)
     ax.spines['bottom'].set_color('white')

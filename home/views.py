@@ -329,6 +329,7 @@ def trend(request, id):
     if "," in click_categories:
         click_categories = click_categories.split(", ")[0]
     arr = []
+    date_arr = []
     for i in All_Products:
         if "," in i.categories:
             tmp = i.categories.split(",")[0]
@@ -340,7 +341,8 @@ def trend(request, id):
                 if len(j.keywords) == 0:
                     continue
                 arr += j.keywords.split(" ")
-    make_charts(Counter(arr))
+                date_arr.append(j.date)
+    make_charts(Counter(arr),date_arr)
 
     T_Products = [ProductModel.objects.all().order_by('-search_value')[i * 5:i * 5 + 5] for i in range(4)]
     R_Products = [ProductModel.objects.all().order_by('-created_at')[i * 5:i * 5 + 5] for i in range(4)]
