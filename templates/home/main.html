@@ -76,11 +76,11 @@
             <li class='row'>
                 {% for ul in temp_product %}
                     <div class='item_box'><a href="/modal/{{ ul.id }}/"><img src='{{ ul.img_src }}' class='item'></a></div>
-                    <div>
-                        <a href="/home/delete/{{ ul.id }}">
-                            <span class="badge rounded-pill bg-danger">삭제</span>
-                        </a>
-                    </div>
+{#                    <div>#}
+{#                        <a href="/home/delete/{{ ul.id }}">#}
+{#                            <span class="badge rounded-pill bg-danger">삭제</span>#}
+{#                        </a>#}
+{#                    </div>#}
                 {% endfor %}
             </li>
             {% endfor %}

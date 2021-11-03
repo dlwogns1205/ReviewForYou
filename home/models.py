@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 # Create your models here.
 class ProductModel(models.Model):
     class Meta:
@@ -14,7 +14,7 @@ class ProductModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     total_value = models.FloatField(null=True, default=0)
-    pos_neg_rate = models.FloatField(null=True, default=0)
+    pos_neg_rate = models.IntegerField(null=True, default=0)
     search_value = models.IntegerField(null=True)
 
 
@@ -27,6 +27,7 @@ class ReviewModel(models.Model):
     keywords = models.CharField(max_length=256)
     morph = models.CharField(max_length=256, default='')
     xai_vale = models.CharField(max_length=256, default='')
+    date = models.CharField(max_length=256, default='')
 
 class ProductKeyword(models.Model):
     class Meta:

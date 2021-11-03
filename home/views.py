@@ -136,50 +136,53 @@ def review_detail(request, review_id):
     keyword_cnt = defaultdict(int)
     for sen in sentences:
         ws, vs_1, rate, vs_2 = DNN_func(sen)
+
         line=[]
+        value=[]
         for w, v1, v2 in zip(ws, vs_1, vs_2):
             if len(w) == 0:
                 break
             v = round((v1 + v2) / 2, 2)
             line.append((w, v))
+            value.append(v)
         temp.append([line, sen])
 
         for word in keywords:
             similar_word = make_sim_word([word])
             if word in sen: #이 부분
-                keyword_rate[word] += float(rate)
+                keyword_rate[word] += round(make_score2(make_score(sum(value)/len(value)))*100,1)
                 keyword_cnt[word] += 1
             else:
                 if similar_word[word]:
                     for sim_word in similar_word[word]:
                         if sim_word in sen:
-                            keyword_rate[word] += float(rate)
+                            keyword_rate[word] += round(make_score2(make_score(sum(value)/len(value)))*100,1)
                             keyword_cnt[word] += 1
 
     keyword_eval = []
 
     for w, total_rate in keyword_rate.items():
-        keyword_eval.append([w, round((total_rate / keyword_cnt[w]) * 100, 2)])
+        keyword_eval.append([w, round((total_rate / keyword_cnt[w]), 2)])
 
     if request.method == 'GET':  # 'positive_comments':positive_comments, 'negative_comments':negative_comments,
         selected_review = sentences[0]
         other_reivew = ReviewModel.objects.filter(product_id=product_id).exclude(id=review_id)
 
-        ws, vs_1, rate, vs_2 = DNN_func(selected_review)
+        ws, vs_1, _ , vs_2 = DNN_func(selected_review)
         sen_xai = []
+        value=[]
         for w, v1, v2 in zip(ws, vs_1, vs_2):
             if len(w) == 0:
                 break
             v = round((v1 + v2) / 2, 2)
-            # print(w, ':', v1, v2, end='//')
             sen_xai.append((w, v))
-        # print()
+            value.append(v)
 
         text = []
         for review in other_reivew:
             text.append([review.score, review.review])
         review_data, vocab_sorted = return_review_data(text)
-        result_same_sentences, same_rate = result_of_selected_review_s_same_reviews(selected_review, rate, review_data,
+        result_same_sentences, same_rate = result_of_selected_review_s_same_reviews(selected_review, round(make_score2(make_score(sum(value)/len(value)))*100,2), review_data,
                                                                             vocab_sorted)
 
 
@@ -194,23 +197,20 @@ def review_detail(request, review_id):
         other_reivew = ReviewModel.objects.filter(product_id=product_id).exclude(id=review_id)
 
         ws, vs_1, rate, vs_2 = DNN_func(selected_review)
-        # print(rate)
         sen_xai = []
+        value = []
         for w, v1, v2 in zip(ws, vs_1, vs_2):
             if len(w) == 0:
                 break
             v = round((v1 + v2) / 2, 2)
-            # print(w, ':', v1, v2, end='//')
             sen_xai.append((w, v))
-        # print()
+            value.append(v)
 
         text = []
         for review in other_reivew:
             text.append([review.score, review.review])
         review_data, vocab_sorted = return_review_data(text)
-        # print(selected_review, rate[0])
-        result_same_sentences, same_rate = result_of_selected_review_s_same_reviews(selected_review, rate[0], review_data, vocab_sorted)
-        same_rate = round(same_rate,1)
+        result_same_sentences, same_rate = result_of_selected_review_s_same_reviews(selected_review, round(make_score2(make_score(sum(value)/len(value)))*100,2), review_data, vocab_sorted)
 
         return render(request, 'home/detail.html',
                       {'TOP_Products': T_Products, 'RECENT_Products': R_Products, 'click_Product': click_Product,
@@ -263,6 +263,7 @@ def url_search(request):
                 xai_before_text = tem_data['xai_before_text']
                 xai_value = tem_data['xai_value']
                 xai_positive_negative = tem_data['xai_positive_negative']
+                dates = tem_data['score']
                 product = ProductModel.objects.create(product_url=url_src, product_name=product_name,
                                                       img_src=img_src, price=price, review_len=review_len,
                                                       categories=categories, product_num=product_num, search_value=1)
@@ -281,18 +282,18 @@ def url_search(request):
                     product_score_list.append(tmp_score)
                     review_model.morph = " ".join(xai_before_text[index])
                     review_model.xai_vale = " ".join([*map(lambda x: str(x), xai_value[index])])
+                    review_model.date = dates[index]
                     review_model.save()
-                product.pos_neg_rate = round(sum([1 for i in product_score_list if i > 5]) * 10 / (index + 1))
+                product.pos_neg_rate = int(sum([1 for i in product_score_list if i > 5]) * 100 / (index + 1))
                 product.total_value = round(sum(product_score_list) / (index + 1), 1)
                 product.save()
 
                 for word, sentence in result.items():
-                    keyword_pos_rate = float(keyword_ratio[word])
                     product_keyword = ProductKeyword()
                     product_keyword.product_id = product
                     product_keyword.keyword = word
                     product_keyword.summarization = sentence
-                    product_keyword.keyword_positive = round(keyword_pos_rate * 100, 1)
+                    product_keyword.keyword_positive = round(float(keyword_ratio[word]),1)
                     product_keyword.save()
 
 

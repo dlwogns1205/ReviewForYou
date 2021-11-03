@@ -33,6 +33,7 @@ def positive_or_negative(arr):
 
 def DNN_func(sentence):
     after_preprocess = re.sub(r" {2,}", " ", hangul.sub(' ', sentence))
+    after_preprocess = after_preprocess.strip()
     tmp = [text[0] for text in mecab.pos(after_preprocess) if
            text[1][0] != 'E' and text[1][0] != 'S' and text[1][0] != 'X' and text[1][0] != 'J' and text[
                1] != 'UNKNOWN' and text[0] != '.' and text[0] !='옷']
@@ -115,7 +116,7 @@ def Crawling_11st(product_num, pageNo):
                 if len(review) <= 3:
                     temp.append([5, '좋아요', ['좋아요'], [1.76], 9.1899])
                     continue
-                score = str(rev['evlPnt'])
+                score = rev['createDt']
                 xai_before_text = []
                 xai_value = []
 
@@ -377,15 +378,19 @@ def review_summarization(text):
     for word in keyword:
         review_data_list = []
         for i in range(len(review_data)):
-            if word in mecab.morphs(review_data.loc[i, 'review']):
-                _, _, pos_neg_ratio, _ = DNN_func(review_data.loc[i, 'review'])
+            if word in review_data.loc[i, 'review']: # mecab.morphs(review_data.loc[i, 'review'])
+                ws, vs_1, _, vs_2 = DNN_func(review_data.loc[i, 'review'])
+                value = []
+                for w, v1, v2 in zip(ws, vs_1, vs_2):
+                    v = round((v1 + v2) / 2, 2)
+                    value.append(v)
                 if 2 < len(review_data.loc[i, 'review']) < 30:
                     temp_sent = [w for w in mecab.morphs(review_data.loc[i, 'review']) if
                                  w not in keyword]
                     if temp_sent:
                         doc2vec = vectors(temp_sent)
                         if doc2vec is not None:
-                            review_data_list.append([i, review_data.loc[i, 'review'], doc2vec, pos_neg_ratio])  # [idx:]
+                            review_data_list.append([i, review_data.loc[i, 'review'], doc2vec, round(make_score2(make_score(sum(value)/len(value)))*100,1)])  # [idx:]
         review_data_word[word] = review_data_list
     return review_data_word, keyword, vocab_sorted, review_data
 
@@ -399,21 +404,10 @@ def review_similarity_measurement(review_and_word):
         keyword_pos_neg_ratio = total/len(review_and_word[word])
         each_keyword_ratio[word] = keyword_pos_neg_ratio
         temp_list = []
-        #ver2
-        # if keyword_pos_neg_ratio > 0.5:
-        #     for i in range(len(review_and_word[word])):
-        #         if review_and_word[word][i][3] > 0.5:
-        #             print(review_and_word[word][i][1], review_and_word[word][i][3])
-        #             temp_list.append(review_and_word[word][i])
-        # else:
-        #     for i in range(len(review_and_word[word])):
-        #         if review_and_word[word][i][3] <= 0.5:
-        #             print(review_and_word[word][i][1], review_and_word[word][i][3])
-        #             temp_list.append(review_and_word[word][i])
 
         # ver3
         for i in range(len(review_and_word[word])):
-            if float(keyword_pos_neg_ratio)-0.15 <= review_and_word[word][i][3] <= float(keyword_pos_neg_ratio)+0.15:
+            if float(keyword_pos_neg_ratio) - 15 <= review_and_word[word][i][3] <= float(keyword_pos_neg_ratio)+15:
                 temp_list.append(review_and_word[word][i])
         review_data_word[word] = temp_list
 
@@ -489,13 +483,10 @@ def keyword_in_review(temp_review, keyword):
 def similarity_and_major_similar_sentence(review_data, vocab_sorted, selected_review, rate):  # idx : 선택된 리뷰에서의 선택한 리뷰의 idx
     check_vo = [w for w, v in vocab_sorted if v >= 3 and w not in useless_NNG]
     most_N = ' '.join([w for w in check_vo]).strip()
-    # print(most_N)
     all_line_of_review = []
-    # print(mecab.pos(selected_review))
     for w, p in mecab.pos(selected_review):
         if (p == 'NNG' or p=='NNP') and w in most_N and w not in all_line_of_review :
             all_line_of_review.append(w)
-    # print(all_line_of_review)
     if len(all_line_of_review) == 0:
         return [], [], [], []
 
@@ -507,11 +498,15 @@ def similarity_and_major_similar_sentence(review_data, vocab_sorted, selected_re
                 all_review_of_same_word.append(review_data.loc[i, 'review'])
                 break
     all_rev_of_same_word = []
-    # print(float(rate - 0.15), float(rate + 0.15))
     for rev in all_review_of_same_word:
-        _, _, pos_neg, _ = DNN_func(rev)
-        # print(pos_neg)
-        if float(rate - 0.15) < float(pos_neg) < float(rate + 0.15) and rev not in all_rev_of_same_word:
+        ws, vs_1, _ , vs_2 = DNN_func(rev)
+        value = []
+        for w, v1, v2 in zip(ws, vs_1, vs_2):
+            if len(w) == 0:
+                break
+            v = round((v1 + v2) / 2, 2)
+            value.append(v)
+        if float(rate - 15) < make_score2(make_score(sum(value)/len(value)))*100 < float(rate + 15) and rev not in all_rev_of_same_word:
             all_rev_of_same_word.append(rev)
 
     if len(all_rev_of_same_word) == 0:
@@ -528,13 +523,10 @@ def similarity_and_major_similar_sentence(review_data, vocab_sorted, selected_re
     cosine_similarities_for_similarity = cosine_similarity(for_similarity, for_similarity)
     selected_line_with_similar_review_idx = [[i, r] for i, r in enumerate(cosine_similarities_for_similarity[-1])]
     result_sorted = sorted(selected_line_with_similar_review_idx, key=lambda x: x[1], reverse=True)
-    # print(result_sorted)
     result_same_sentences = []
     for index, val in result_sorted[1:]:
-        # print(val)
         if val >= 0.6:
             result_same_sentences.append(all_rev_of_same_word[index])
-    # print(len(all_rev_of_same_word), len(result_same_sentences), len(result_sorted), len(all_line_of_review))
     return all_rev_of_same_word, result_same_sentences, result_sorted, all_line_of_review
 
 def result_of_selected_review_s_same_reviews(selected_review, rate, review_data, vocab_sorted):
@@ -562,7 +554,6 @@ def result_of_selected_review_s_same_reviews(selected_review, rate, review_data,
             each_rev.append(result_check_word_flag)
         checked_same_senteces.append(each_rev)
 
-    # print(checked_same_senteces)
     for idx, val in result_sorted[1:]:
         if val > 0.5:
             same += 1
@@ -602,7 +593,6 @@ def lets_do_crawling(site, product_num, url_src=None):
     elif site == 2:
         url_basic = url_src
         store = url_basic.split('//')[1].split('.')[0] # smartstore, brand, shopping
-        # print(store)
         data = requests.get(url_basic, headers=headers)
         soup = BeautifulSoup(data.text, 'html.parser')
         product_detail = soup.find_all('script')[1].text.split(',')
@@ -615,7 +605,6 @@ def lets_do_crawling(site, product_num, url_src=None):
         for detail in product_detail:
             if '"sellerImmediateDiscountPolicyNo"' in detail:
                 product_num = re.sub('[^0-9]', '', detail.split(':')[2].replace('"', ''))
-                # print(product_num)
                 break
 
         product_info = soup.find_all('script')[0].text.split(',')
@@ -636,7 +625,6 @@ def lets_do_crawling(site, product_num, url_src=None):
         pool.close()
         pool.join()
 
-        # print(product_num, merchant_num, store)
 
     text = [j for i in tem for j in i]
     tem_data = pd.DataFrame(text, columns=['score', 'review','xai_before_text','xai_value','xai_positive_negative'])
@@ -645,11 +633,8 @@ def lets_do_crawling(site, product_num, url_src=None):
         if tem_data.loc[i,'review'] == '좋아요':
             cnt+=1
 
-    # print(len(tem_data))
-    # print(cnt)
 
     tem_data.drop_duplicates(['review'], inplace=True)
-    # print(tem_data['score'])
     if len(tem_data) > 500:
         tem_data = tem_data.sample(500)
     tem_data.reset_index(drop=True, inplace=True)
