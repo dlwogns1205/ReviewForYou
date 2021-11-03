@@ -35,7 +35,7 @@ def DNN_func(sentence):
     after_preprocess = re.sub(r" {2,}", " ", hangul.sub(' ', sentence))
     after_preprocess = after_preprocess.strip()
     tmp = [text[0] for text in mecab.pos(after_preprocess) if
-           text[1][0] != 'E' and text[1][0] != 'S' and text[1][0] != 'X' and text[1][0] != 'J' and text[
+           text[1][0] != 'E' and text[1][0] != 'S' and (text[1] == 'XR' or text[1][0] != 'X') and text[1][0] != 'J' and text[
                1] != 'UNKNOWN' and text[0] != '.' and text[0] !='옷']
     value = [float(con[con[:, 0] == word, 1]) if word in word_index else 0 for word in tmp]
     if len(value) >= 20:
